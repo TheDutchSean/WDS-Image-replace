@@ -1,0 +1,3 @@
+module WDS-IMAGE-REPLACE
+
+go 1.21.4

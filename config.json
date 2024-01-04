@@ -1,0 +1,13 @@
+{
+    "server":"LA-SERVER-01",
+    "image":{
+        "group":"Win10-image",
+        "name":"Win10 x64 Student WS",
+        "path":"D:\\active images\\Student WorkStation\\Win10 x64 Student WS.wim"
+    },
+    "log":{
+        "name":"log.txt",
+        "path":""
+    }
+}
+
