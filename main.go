@@ -34,20 +34,23 @@ var config Config
 
 func main() {
 
+	fmt.Println("Loading WDS-Image-Replace v1.3")
 	exe, err := os.Executable()
     if err != nil {
         panic(err)
     }
 
     root = filepath.Dir(exe)
+	fmt.Println("Loaded in "+root)
+	fmt.Println("Get config")
 	config = getConfig()
-
+	
 	PS_Script()
 
 }
 
 func PS_Script(){
-
+	fmt.Println("Checking config")
 	configError := false
 
 	if(config.Server == ""){
@@ -75,35 +78,47 @@ func PS_Script(){
 	}
 
     // PowerShell script as a string
-    psScript := `
+	fmt.Println("Starting Image replace procces this can take a few minutes")
+    
+	psScript := `
         $ErrorActionPreference = "Stop" # Make sure any error is treated as a terminating error
 
         try {
 			WDSUTIL /Replace-Image /Image:"`+config.Image.Name+`" /ImageType:Install /ImageGroup:"`+config.Image.Group+`" /ReplacementImage /ImageFile:"`+config.Image.Path+`" /Name:"`+config.Image.Name+`" /Server:`+config.Server+`
-        } catch {
-            Write-Error $_.Exception.Message
-            exit 1
-        }
-    `
-
-    // Run PowerShell command
-    cmd := exec.Command("powershell", "-command", psScript)
-    var stdoutBuf, stderrBuf bytes.Buffer
-    cmd.Stdout = &stdoutBuf
-    cmd.Stderr = &stderrBuf
-    err := cmd.Run()
-
-    if err != nil {
-        logger("Error executing PowerShell script: " + err.Error())
-        if stderrBuf.Len() > 0 {
-            logger("PowerShell error output: " + stderrBuf.String())
-        }
-        return
-    }
-
-    if stdoutBuf.Len() > 0 {
-        logger("PowerShell output: " + stdoutBuf.String())
-    }
+			} catch {
+				Write-Error $_.Exception.Message
+				exit 1
+			}
+		`
+	
+		// Run PowerShell command
+		cmd := exec.Command("powershell", "-command", psScript)
+		var stdoutBuf, stderrBuf bytes.Buffer
+		cmd.Stdout = &stdoutBuf
+		cmd.Stderr = &stderrBuf
+		err := cmd.Run()
+	
+		if err != nil {
+			fmt.Println("WDS-Image-replace encounterd a error. Check the log file and please try again.")
+			exitErr, ok := err.(*exec.ExitError)
+			if ok {
+				// The command failed to execute properly
+				logger("Error PowerShell script failed with exit code: " + fmt.Sprint(exitErr.ExitCode()))
+				if stderrBuf.Len() > 0 {
+					logger("PowerShell error output: " + stderrBuf.String())
+				}
+			} else {
+				// Some other error occurred
+				logger("Error executing PowerShell script: " + err.Error())
+			}
+			return
+		}
+	
+		
+		if stdoutBuf.Len() > 0 {
+			fmt.Println("Image replaced succesfully!")
+			logger("Image replaced succesfully!")
+		}
 
 }
 
