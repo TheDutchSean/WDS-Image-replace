@@ -1,0 +1,7 @@
+https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/wdsutil-replace-image
+
+WDSUTIL /Replace-Image /Image:"Name of Old Image" /ImageType:Install /ReplacementImage /ImageFile:"Path to New Image" /Server:YourWDSServer /Name:"Set image name"
+
+WDSUTIL /Replace-Image /Image:`+config.Image.Name+` /ImageType:Install /ImageGroup:`+config.Image.Group+` /ReplacementImage /ImageFile:`+config.Image.Path+` /Server:`+config.Server+` /Name:`+config.Image.Name+`
+
+WDSUTIL /Replace-Image /Image:Win10-image /ImageType:Install /ImageGroup:Win10-image /ReplacementImage /ImageFile:D:\active images\Student WorkStation\Win10 x64 Student WS.wim /Server:LA-SERVER-01 /Name:Win10-image

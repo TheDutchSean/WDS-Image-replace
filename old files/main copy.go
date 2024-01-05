@@ -77,9 +77,14 @@ func PS_Script(){
     // PowerShell script as a string
     psScript := `
         $ErrorActionPreference = "Stop" # Make sure any error is treated as a terminating error
+        $WDSserver = "` + config.Server + `"
+        $ImageGroup = "` + config.Image.Group + `"
+        $ImageName = "` + config.Image.Name + `"
+        $NewImageFilePath = "` + config.Image.Path + `"
 
         try {
-			WDSUTIL /Replace-Image /Image:"`+config.Image.Name+`" /ImageType:Install /ImageGroup:"`+config.Image.Group+`" /ReplacementImage /ImageFile:"`+config.Image.Path+`" /Server:`+config.Server+`
+            Import-Module WdsMgmt
+            Replace-WdsInstallImage -Server $WDSserver -ImageGroup $ImageGroup -ImageName $ImageName -ReplacementImagePath $NewImageFilePath
         } catch {
             Write-Error $_.Exception.Message
             exit 1
