@@ -79,7 +79,7 @@ func PS_Script(){
         $ErrorActionPreference = "Stop" # Make sure any error is treated as a terminating error
 
         try {
-			WDSUTIL /Replace-Image /Image:"`+config.Image.Name+`" /ImageType:Install /ImageGroup:"`+config.Image.Group+`" /ReplacementImage /ImageFile:"`+config.Image.Path+`" /Server:`+config.Server+`
+			WDSUTIL /Replace-Image /Image:"`+config.Image.Name+`" /ImageType:Install /ImageGroup:"`+config.Image.Group+`" /ReplacementImage /ImageFile:"`+config.Image.Path+`" /Name:"`+config.Image.Name+`" /Server:`+config.Server+`
         } catch {
             Write-Error $_.Exception.Message
             exit 1
