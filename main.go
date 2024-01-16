@@ -115,11 +115,15 @@ func PS_Script(){
 		}
 	
 		
-		if stdoutBuf.Len() > 0 {
-			fmt.Println("Image replaced succesfully!")
-			logger("Image replaced succesfully!")
-		}
+		// if stdoutBuf.Len() > 0 {
+		// 	fmt.Println("Image replaced succesfully!")
+		// 	logger("Image replaced succesfully!")
+		// }
 
+		fmt.Println("Image replaced succesfully!")
+		logger("Image replaced succesfully!")
+
+		return
 }
 
 func getConfig() Config{
@@ -182,7 +186,7 @@ func logger(msg string){
     writer := bufio.NewWriter(file)
 
     // Write a new line to the file
-    _, err = writer.WriteString(timeStamp() + ": "+msg+"\n") // The \n is the newline character
+    _, err = writer.WriteString(timeStamp() + ": "+toASCII(msg)+"\n") // The \n is the newline character
     if err != nil {
         fmt.Println("Error writing to the file:", err)
         return
@@ -210,4 +214,19 @@ func checkFile(path string)bool{
 func timeStamp() string{
 	time := time.Now().Format("2006-01-02 15:04:05")
 	return time
+}
+
+
+func toASCII(s string) string {
+    var asciiStr string
+    for _, r := range s {
+        if r <= 127 {
+            asciiStr += string(r)
+        } else {
+            // Replace non-ASCII character with '?'
+            // or you can just skip it with `continue`
+            asciiStr += "?"
+        }
+    }
+    return asciiStr
 }
