@@ -46,7 +46,7 @@ func main() {
 	config = getConfig()
 	
 	PS_Script()
-
+	
 }
 
 func PS_Script(){
@@ -80,6 +80,16 @@ func PS_Script(){
     // PowerShell script as a string
 	fmt.Println("Starting Image replace procces this can take a few minutes")
     
+	// Start the timer
+	done := make(chan bool)
+	var elapsedTime int32
+
+	go func() {
+		elapsedTime = startTimer(done)
+	}()
+
+	
+
 	psScript := `
         $ErrorActionPreference = "Stop" # Make sure any error is treated as a terminating error
 
@@ -114,14 +124,10 @@ func PS_Script(){
 			return
 		}
 	
-		
-		// if stdoutBuf.Len() > 0 {
-		// 	fmt.Println("Image replaced succesfully!")
-		// 	logger("Image replaced succesfully!")
-		// }
+		done <- true
 
-		fmt.Println("Image replaced succesfully!")
-		logger("Image replaced succesfully!")
+		fmt.Println("Image succesfully replaced in "+fmt.Sprint(elapsedTime)+" seconds!")
+		logger("Image succesfully replaced in "+fmt.Sprint(elapsedTime)+" seconds!")
 
 		return
 }
@@ -229,4 +235,19 @@ func toASCII(s string) string {
         }
     }
     return asciiStr
+}
+
+func startTimer(done <-chan bool) int32 {
+	seconds := 0
+
+	for {
+		select {
+		case <-done:
+			return int32(seconds)
+		default:
+			fmt.Printf("\rElapsed time: %d seconds", seconds)
+			time.Sleep(time.Second)
+			seconds++
+		}
+	}
 }

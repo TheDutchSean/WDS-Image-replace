@@ -1,5 +1,5 @@
 {
-    "server":"LA-SERVER-01",
+    "server":"YFA-DC-02",
     "image":{
         "group":"Win10-image",
         "name":"Win10 x64 Student WS",
