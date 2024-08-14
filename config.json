@@ -1,9 +1,9 @@
 {
-    "server":"YFA-DC-02",
+    "server":"YFA-WDS-01",
     "image":{
-        "group":"Win10-image",
-        "name":"Win10 x64 Student WS",
-        "path":"D:\\active images\\Student WorkStation\\Win10 x64 Student WS.wim"
+        "group":"Win10",
+        "name":"Win10 Student WS",
+        "path":"\\\\YFA-FS-01\\WDS Student WS$\\Win10 Student WS.wim"
     },
     "log":{
         "name":"log.txt",
